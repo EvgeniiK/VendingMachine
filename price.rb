@@ -9,7 +9,6 @@ class Price
 
   # no cents value
   def human_value
-    # todo preattyfier
     @cents.to_f / 100
   end
 

@@ -1,11 +1,18 @@
-class VmInterface
-  def initialize(vending_machine)
-    @vending_machine = vending_machine
+class Messaging
+  def select_product_step(products)
+    avaliable_products(products)
+    type_a_number
   end
 
-  def avaliable_products
-    # write a notice if nothing left
-    @vending_machine.product_stock.items_in_stock.each do |(button_number, stock_info)|
+  def coins_input_step(product, amount_inserted)
+    selected_product(product)
+    amount_inserted(amount_inserted)
+    avaliable_coins(VendingMachine::COIN_TYPES)
+    type_a_number
+  end
+
+  def avaliable_products(products)
+    products.each do |(button_number, stock_info)|
       product = stock_info[:item]
       p "#{button_number}: #{product.name}, price: #{product.price.human_value}"
     end
@@ -32,17 +39,22 @@ class VmInterface
   end
 
   def unavaliable_change
-    'Abort operation. Not enough coins for change'
+    p 'Abort operation. Not enough coins for change'
   end
 
   def give_change(coins)
-    # todo
-    'your chaange'
+    p "Your change: #{coins}"
   end
 
   def give_product(product)
-    # todo
-    'your product'
+    p "Here is your product: #{product.name}"
   end
 
+  def your_input(number)
+    p number ? "You pressed: #{number}" : "Wrong input"
+  end
+
+  def something_wrong
+    'Something went wrong'
+  end
 end
