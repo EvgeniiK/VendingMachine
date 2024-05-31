@@ -8,7 +8,8 @@ require_relative 'seeds'
 class VendingMachine
 	STEPS = %i[select_product coins_input give_product]
 	DEFAULT_STOCK_AMOUNT = 1
-  COIN_TYPES = [0.25, 0.5, 1, 3, 5]
+  MAX_INPUT_VALUE_SIZE = 2
+  COIN_TYPES = [0.25, 0.5, 2, 3, 5]
 	INITIAL_PRODUCTS_VALUE = {candy: {stock: 10, price_cents: 250},
 													  chocolate: {stock: 1, price_cents: 125}, 
 														nuts: {stock: 2, price_cents: 110},
@@ -17,6 +18,10 @@ class VendingMachine
 													
 
 	def self.interact(vending_machine: nil)
+    # p Price.new(1200).build
+
+    return 
+
 		vm = vending_machine || VendingMachine.new 
 
     puts '~~~~~~~~~~~~~~~~~~~~~~~~~~'
@@ -43,14 +48,11 @@ class VendingMachine
     @messaging = Messaging.new
     reset_state!
 
-# todo if price 1200 but there is no 200 left - it is 4 coins 5, 5, 1, 1 
-# but better to give 3, 3, 3
-		# p Price.new(1200).to_coins(denominations: COIN_TYPES)
   end
 
-	def read_input(line, possible_numbers)
+	def process_input(line, possible_numbers)
     number = line.gsub(/[^0-9]/, '')
-    return if number.empty? || !possible_numbers.include?(number.to_i)
+    return if number.empty? || number.size > MAX_INPUT_VALUE_SIZE || !possible_numbers.include?(number.to_i)
 
 		number.to_i
 	end
@@ -59,7 +61,7 @@ class VendingMachine
     messaging.select_product_step(product_stock.items_in_stock)
 
     ARGF.each_line do |line|
-      input_value = read_input(line, product_stock.items_in_stock.keys)
+      input_value = process_input(line, product_stock.items_in_stock.keys)
       messaging.your_input(input_value)
       next unless input_value
 
@@ -75,7 +77,7 @@ class VendingMachine
     messaging.coins_input_step(selected_product, amount_inserted)
 
     ARGF.each_line do |line|
-      input_value = read_input(line, (0...COIN_TYPES.size).to_a)
+      input_value = process_input(line, (0...COIN_TYPES.size).to_a)
       messaging.your_input(input_value)
       next unless input_value
 
