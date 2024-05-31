@@ -41,8 +41,6 @@ class VendingMachine
   def initialize
     @product_stock = Stock.new(Seeds.initial_product_stock)
     @coins_stock = Stock.new(Seeds.initial_coin_stock)
-    coins_stock.add_items(2, 1)
-    coins_stock.add_items(2, 1)
     @messaging = Messaging.new
     reset_state
   end
