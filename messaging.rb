@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Messaging
   def select_product_step(products)
     avaliable_products(products)
@@ -13,7 +15,7 @@ class Messaging
 
   def avaliable_products(products)
     return p 'No products left' if products.empty?
-    
+
     products.each do |(button_number, stock_info)|
       product = stock_info[:item]
       p "#{button_number}: #{product.name}, price: #{product.price.units}"
@@ -37,7 +39,7 @@ class Messaging
   end
 
   def avaliable_coins(coin_types)
-    p coin_types.each_with_index.map { |type, i | "#{i}: (#{type})"}.join(';  ')
+    p coin_types.each_with_index.map { |type, i| "#{i}: (#{type})" }.join(';  ')
   end
 
   def unavaliable_change
@@ -48,7 +50,7 @@ class Messaging
     if change.empty?
       p 'No change needed'
     else
-      p "Your change: #{change.to_a.map { |ch| ch.join('*') }.join('; ')}"      
+      p "Your change: #{change.to_a.map { |ch| ch.join('*') }.join('; ')}"
     end
   end
 
@@ -57,10 +59,10 @@ class Messaging
   end
 
   def your_input(number)
-    p number ? "You pressed: #{number}" : "Wrong input"
+    p number ? "You pressed: #{number}" : 'Wrong input'
   end
 
   def something_wrong
-    'Something went wrong'
+    p 'Something went wrong'
   end
 end

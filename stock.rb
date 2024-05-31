@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Stock
   # format: {key: {stock: stock_size}}
   def initialize(items)
@@ -34,4 +36,3 @@ class Stock
     item[:stock] - amount < 0
   end
 end
-

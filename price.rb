@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Price
   attr_accessor :units, :denominations, :coins_stock
 
@@ -6,7 +8,7 @@ class Price
   def initialize(units, coins_stock = nil)
     @units = units.abs
     @coins_stock = coins_stock&.items_in_stock
-    @denominations = (@coins_stock&.keys || VendingMachine::COIN_TYPES).sort_by { |e| -e }
+    @denominations = (@coins_stock&.keys || VendingMachine::COIN_TYPES).sort_by(&:-@)
   end
 
   def to_cents
@@ -22,11 +24,11 @@ class Price
     indexes = []
 
     all_coins_combinations.each_with_index do |combo, i|
-      next if !combo[0].nil?
+      next unless combo[0].nil?
 
       coins_sum = combo.sum { |_denomination, coins_amount| coins_amount }
       if lowest_value.nil? || lowest_value > coins_sum
-        indexes = [i] 
+        indexes = [i]
         lowest_value = coins_sum
       elsif lowest_value == coins_sum
         indexes << i
@@ -53,20 +55,22 @@ class Price
     denominations[start_index..denominations.size].each_with_index do |denomination, i|
       next if denomination > amount
       # not enough coins found
-      return {0 => 0} if (i - 1) < 0
+      return { 0 => 0 } if (i - 1) < 0
 
       coins = coins_and_remains(amount, denomination, i - 1)
       result.merge!(coins)
       return result
     end
     # if not possible to find
-    {0 => 0}
+    { 0 => 0 }
   end
 
   def coins_and_remains(amount, denomination, i)
     remains = count_remains(amount, denomination)
     result = { denomination => (amount / denomination).to_i }
-    result.merge!(remain_coins_calculation(amount: remains, start_index: i)) if remains != 0
+    if remains != 0
+      result.merge!(remain_coins_calculation(amount: remains, start_index: i))
+    end
 
     result
   end
@@ -75,7 +79,9 @@ class Price
     return amount % denomination if coins_stock.nil?
 
     avaliable_coins_amount = (amount / denomination).to_i
-    avaliable_coins_amount = coins_stock[denomination][:stock] if avaliable_coins_amount > coins_stock[denomination][:stock]
+    if avaliable_coins_amount > coins_stock[denomination][:stock]
+      avaliable_coins_amount = coins_stock[denomination][:stock]
+    end
     amount - denomination * avaliable_coins_amount
   end
 end
