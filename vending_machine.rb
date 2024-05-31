@@ -170,5 +170,3 @@ class VendingMachine
     product_stock.remove_items(selected_product.button_number)
   end
 end
-
-VendingMachine.interact

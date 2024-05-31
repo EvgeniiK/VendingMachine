@@ -52,12 +52,10 @@ class Price
   def remain_coins_calculation(amount:, start_index: 0)
     result = {}
 
-    denominations[start_index..denominations.size].each_with_index do |denomination, i|
+    denominations[start_index..denominations.size].each do |denomination|
       next if denomination > amount
-      # not enough coins found
-      return { 0 => 0 } if (i - 1) < 0
 
-      coins = coins_and_remains(amount, denomination, i - 1)
+      coins = coins_and_remains(amount, denomination, start_index)
       result.merge!(coins)
       return result
     end
@@ -69,7 +67,7 @@ class Price
     remains = count_remains(amount, denomination)
     result = { denomination => (amount / denomination).to_i }
     if remains != 0
-      result.merge!(remain_coins_calculation(amount: remains, start_index: i))
+      result.merge!(remain_coins_calculation(amount: remains, start_index: i + 1))
     end
 
     result
