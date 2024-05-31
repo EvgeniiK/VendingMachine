@@ -12,18 +12,18 @@ class Stock
     @items.select { |_key, item| item[:stock] > 0 }
   end
 
-  def remove_items!(key, amount = 1)
+  def remove_items(key, amount = 1)
     item = @items[key]
     return if item_missing?(item) || not_enough_amount?(item, amount)
-    
-    item[:stock] -= amount
+
+    item[:stock] -= amount.abs
   end
 
-  def add_items!(key, amount = 1)
-    item = @items[:key]
-    return if item_missing?(item)
-      
-    item[:stock] += amount
+  def add_items(key, amount = 1)
+    @items[key] ||= {}
+    item = @items[key]
+    item[:stock] ||= 0
+    item[:stock] += amount.abs
   end
 
   def item_missing?(item)
@@ -31,7 +31,7 @@ class Stock
   end
 
   def not_enough_amount?(item, amount)
-    item[:stock] - amount <= 0
+    item[:stock] - amount < 0
   end
 end
 

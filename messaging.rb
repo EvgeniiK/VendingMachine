@@ -12,14 +12,16 @@ class Messaging
   end
 
   def avaliable_products(products)
+    return p 'No products left' if products.empty?
+    
     products.each do |(button_number, stock_info)|
       product = stock_info[:item]
-      p "#{button_number}: #{product.name}, price: #{product.price.human_value}"
+      p "#{button_number}: #{product.name}, price: #{product.price.units}"
     end
   end
 
   def selected_product(product)
-    p "Selected product: #{product.name}, price: #{product.price.human_value}"
+    p "Selected product: #{product.name}, price: #{product.price.units}"
   end
 
   def select_again
@@ -42,8 +44,12 @@ class Messaging
     p 'Abort operation. Not enough coins for change'
   end
 
-  def give_change(coins)
-    p "Your change: #{coins}"
+  def give_change(change)
+    if change.empty?
+      p 'No change needed'
+    else
+      p "Your change: #{change.to_a.map { |ch| ch.join('*') }.join('; ')}"      
+    end
   end
 
   def give_product(product)
